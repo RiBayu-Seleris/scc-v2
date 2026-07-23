@@ -19,18 +19,21 @@ const ui = useUiStore()
 const auth = useAuthStore()
 const { isCollapsed, isShowSidebar } = storeToRefs(ui)
 
-function closeSidebarOnSmallScreen() {
-  if (window.innerWidth <= 768) ui.toggleSidebar(false)
+// Sinkronkan sidebar dengan lebar layar: di bawah lg (1024px) sidebar menjadi
+// drawer yang menimpa konten, jadi otomatis DITUTUP; di desktop ditampilkan lagi.
+// Inilah yang membuat sidebar langsung menutup saat layar mengecil (mis. buka devtools).
+function syncSidebarToViewport() {
+  ui.toggleSidebar(window.innerWidth >= 1024)
 }
 
 onMounted(() => {
   auth.loadMenuFlags()
-  closeSidebarOnSmallScreen()
-  window.addEventListener('resize', closeSidebarOnSmallScreen)
+  syncSidebarToViewport()
+  window.addEventListener('resize', syncSidebarToViewport)
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', closeSidebarOnSmallScreen)
+  window.removeEventListener('resize', syncSidebarToViewport)
 })
 </script>
 

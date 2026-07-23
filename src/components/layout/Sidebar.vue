@@ -194,7 +194,7 @@ function onAfterLeave(el) {
       class="flex h-16 shrink-0 items-center gap-2.5 border-b border-slate-200 px-4 dark:border-slate-800"
     >
       <div
-        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-600 text-xs font-bold text-white"
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#D60742] text-xs font-bold text-white mx-auto"
         :class="{ 'sidebar-text-collapsed hidden': !isCollapsed }"
       >
         SCC
@@ -203,7 +203,7 @@ function onAfterLeave(el) {
       <img
         :src="Logo"
         alt="Seleris Credit Cover"
-        class="h-full w-auto p-0 object-contain"
+        class="h-full w-auto py-1 object-contain"
         :class="{ hidden: isCollapsed }"
       />
       <!-- <span
@@ -215,7 +215,7 @@ function onAfterLeave(el) {
     </div>
 
     <!-- Daftar menu -->
-    <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+    <nav class="flex-1 space-y-1 overflow-y-auto px-4 py-4">
       <template v-for="group in menu">
         <!-- Menu tunggal nonaktif (mis. Excel Sertifikat saat tidak berlaku) -->
         <button

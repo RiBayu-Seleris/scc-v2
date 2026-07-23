@@ -6,6 +6,15 @@
  */
 export const TAKAFUL_INSURANCE_COMPANY_ID = 15
 
+/**
+ * Apakah user aktif tergolong akun Takaful (insurance_company_id === 15)?
+ * Sumber: localStorage 'InsuredCompanyId' (di-set saat login), mengikuti perilaku
+ * isTakafulUser() di SCC. Dipakai mis. untuk label "Kode Unik TSS" vs "Kode Unik e-HD".
+ */
+export function isTakaful() {
+  return Number(localStorage.getItem('InsuredCompanyId')) === TAKAFUL_INSURANCE_COMPANY_ID
+}
+
 export const INSURANCE_MENUS = {
   [TAKAFUL_INSURANCE_COMPANY_ID]: {
     key: 'takaful',

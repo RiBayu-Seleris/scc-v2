@@ -15,6 +15,7 @@ import {
   getSubmissionRequiredDocuments,
 } from '@/lib/services/submission'
 import { penutupanDetailTabs } from '@/config/detailTabs'
+import { isTakaful } from '@/config/insuranceMenus'
 import { rupiah } from '@/lib/format'
 import { safeUrl } from '@/lib/sanitize'
 import { useMeta } from '@/composables/useMeta'
@@ -28,6 +29,8 @@ useMeta({ title: 'Detail Penutupan — Data Asuransi' })
 
 const route = useRoute()
 const auth = useAuthStore()
+// Khusus akun Takaful, label ini menjadi "Kode Unik TSS" (selain itu "Kode Unik e-HD").
+const ehdLabel = isTakaful() ? 'Kode Unik TSS' : 'Kode Unik e-HD'
 const session = getSession()
 const id = route.params.id
 const detail = ref({})
@@ -109,7 +112,7 @@ function downloadCreditContract() {
           <InfoField label="Akhir Asuransi" :value="data.end_date" />
           <InfoField label="Masa Asuransi" :value="data.insurance_period ? `${data.insurance_period} Bulan` : ''" />
           <InfoField label="Nomor PPAJK" :value="data.ppajk_number" />
-          <InfoField label="Kode Unik e-HD" :value="data.ehd_number" />
+          <InfoField :label="ehdLabel" :value="data.ehd_number" />
           <InfoField label="Keterangan" :value="data.description" />
           <InfoField label="Status Kehamilan" :value="data.pregnancy_status" />
         </dl>

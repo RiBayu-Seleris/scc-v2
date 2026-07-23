@@ -122,7 +122,10 @@ export const useAuthStore = defineStore('auth', {
       const { data } = await api.get(path)
       const partners = data?.data || []
       this.partners = partners
-      this.ensureSelectedPartner(partners)
+      // Hanya tetapkan pilihan bank saat memuat daftar PENUH (tanpa search).
+      // Pencarian hanya memfilter tampilan dropdown; TIDAK boleh mengubah bank yang
+      // sedang dipilih — sama seperti SCC (searchData hanya mengisi `partners`).
+      if (!search) this.ensureSelectedPartner(partners)
       return partners
     },
 

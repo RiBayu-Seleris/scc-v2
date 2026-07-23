@@ -6,7 +6,8 @@ import { defineStore } from 'pinia'
  */
 export const useUiStore = defineStore('ui', {
   state: () => ({
-    isShowSidebar: typeof window === 'undefined' ? true : window.innerWidth > 768,
+    // Di bawah lg (1024px) sidebar menjadi drawer, jadi awalnya tertutup di layar kecil.
+    isShowSidebar: typeof window === 'undefined' ? true : window.innerWidth >= 1024,
     isCollapsed: false,
     isShowRightPanel: false,
     darkMode: localStorage.getItem('dark_mode') || 'light', // light | dark | system

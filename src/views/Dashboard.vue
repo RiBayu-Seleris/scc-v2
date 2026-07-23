@@ -37,6 +37,14 @@ import Clock from "/assets/icons/clock.svg";
 import Checklist from "/assets/icons/checklist.svg";
 import Line from "/assets/icons/line.svg";
 import Warning from "/assets/icons/warning.svg";
+import PolisLine from "/assets/images/polis-line.svg";
+import PolisIcon from "/assets/icons/file.svg";
+import DebiturLine from "/assets/images/debitur-line.svg";
+import DebiturIcon from "/assets/icons/users.svg";
+import PremiLine from "/assets/images/premi-line.svg";
+import PremiIcon from "/assets/icons/credit-card.svg";
+import UpLine from "/assets/images/up-line.svg";
+import UpIcon from "/assets/icons/shield.svg";
 
 useMeta({ title: "Dashboard" });
 
@@ -137,6 +145,47 @@ onMounted(async () => {
 // ---- Nilai kartu (mapping field persis updateDashboardData asli) ----
 const n = (v) => formatNumber(v ?? 0);
 
+// Kartu ringkasan atas (4 kartu identik, beda label/field/satuan) -> dirender via v-for.
+// Menambah/mengubah kartu cukup di sini. `key` merujuk field di respons `data`.
+const summaryCards = [
+  {
+    icon: PolisIcon,
+    bgFrom: "#1E40AF",
+    bgTo: "#3B82F6",
+    bgLine: PolisLine,
+    label: "Total Polis",
+    key: "total_policy",
+    unit: "Polis",
+  },
+  {
+    icon: DebiturIcon,
+    bgFrom: "#077B26",
+    bgTo: "#3BF670",
+    bgLine: DebiturLine,
+    label: "Total Debitur",
+    key: "total_debitur",
+    unit: "Debitur",
+  },
+  {
+    icon: PremiIcon,
+    bgFrom: "#8E1AB1",
+    bgTo: "#D43BF6",
+    bgLine: PremiLine,
+    label: "Total Premi",
+    key: "total_premium",
+    unit: "IDR",
+  },
+  {
+    icon: UpIcon,
+    bgFrom: "#B13B1A",
+    bgTo: "#F66A3B",
+    bgLine: UpLine,
+    label: "Uang Pertanggungan",
+    key: "total_sum_insured",
+    unit: "IDR",
+  },
+];
+
 // Warna aksen strip kiri kartu (persis inline style dashboard asli):
 // semua kartu "Premi" teal, semua kartu "UP" biru.
 // const ACCENT_PREMI = "#01b7ba";
@@ -164,7 +213,7 @@ const dataRows = computed(() => {
           bgFrom: "#E2E8F0",
           bgTo: "#901CB3",
           bgCardFrom: "#FFFFFF",
-          bgCardTo: "#F3CEFE",
+          bgCardTo: "#F3CEFE80",
           divFrom: premiFrom,
           divTo: premiTo,
         },
@@ -176,7 +225,7 @@ const dataRows = computed(() => {
           bgFrom: "#E2E8F0",
           bgTo: "#901CB3",
           bgCardFrom: "#FFFFFF",
-          bgCardTo: "#F3CEFE",
+          bgCardTo: "#F3CEFE80",
           divFrom: premiFrom,
           divTo: premiTo,
         },
@@ -188,7 +237,7 @@ const dataRows = computed(() => {
           bgFrom: "#E2E8F0",
           bgTo: "#901CB3",
           bgCardFrom: "#FFFFFF",
-          bgCardTo: "#F3CEFE",
+          bgCardTo: "#F3CEFE80",
           divFrom: premiFrom,
           divTo: premiTo,
         },
@@ -200,7 +249,7 @@ const dataRows = computed(() => {
           bgFrom: "#E2E8F0",
           bgTo: "#901CB3",
           bgCardFrom: "#FFFFFF",
-          bgCardTo: "#F3CEFE",
+          bgCardTo: "#F3CEFE80",
           divFrom: premiFrom,
           divTo: premiTo,
         },
@@ -219,7 +268,7 @@ const dataRows = computed(() => {
           bgFrom: "#E2E8F0",
           bgTo: "#F66A3B",
           bgCardFrom: "#FFFFFF",
-          bgCardTo: "#F3CEFE",
+          bgCardTo: "#F3CEFE80",
           divFrom: upFrom,
           divTo: upTo,
         },
@@ -231,7 +280,7 @@ const dataRows = computed(() => {
           bgFrom: "#E2E8F0",
           bgTo: "#F66A3B",
           bgCardFrom: "#FFFFFF",
-          bgCardTo: "#F3CEFE",
+          bgCardTo: "#F3CEFE80",
           divFrom: upFrom,
           divTo: upTo,
         },
@@ -243,7 +292,7 @@ const dataRows = computed(() => {
           bgFrom: "#E2E8F0",
           bgTo: "#F66A3B",
           bgCardFrom: "#FFFFFF",
-          bgCardTo: "#F3CEFE",
+          bgCardTo: "#F3CEFE80",
           divFrom: upFrom,
           divTo: upTo,
         },
@@ -255,7 +304,7 @@ const dataRows = computed(() => {
           bgFrom: "#E2E8F0",
           bgTo: "#F66A3B",
           bgCardFrom: "#FFFFFF",
-          bgCardTo: "#F3CEFE",
+          bgCardTo: "#F3CEFE80",
           divFrom: upFrom,
           divTo: upTo,
         },
@@ -346,7 +395,20 @@ function bar(source) {
         markers: { radius: 3 },
       },
       theme: { mode: chartTheme.value },
-      grid: { borderColor: isDark.value ? "#334155" : "#e2e8f0" },
+      yaxis: {
+        labels: {
+          style: { colors: isDark.value ? "#94a3b8" : "#64748b" },
+        },
+      },
+      grid: {
+        show: true,
+        borderColor: isDark.value ? "#334155" : "#e2e8f0",
+        // Garis grid horizontal (sumbu-Y) DITAMPILKAN supaya tidak polos;
+        // garis vertikal (sumbu-X) disembunyikan agar bersih seperti contoh.
+        yaxis: { lines: { show: true } },
+        xaxis: { lines: { show: false } },
+        padding: { left: 8, right: 8 },
+      },
     },
   };
 }
@@ -448,78 +510,39 @@ const submissionChart = computed(() => donut(data.value.submission_type));
 
     <div v-else class="space-y-6">
       <!-- 1. Dua kartu besar: Total Polis & Total Debitur -->
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-4">
-        <div class="top-card">
-          <div class="relative z-10 text-[13px] font-medium opacity-90">
-            Total Polis
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          v-for="card in summaryCards"
+          :key="card.key"
+          class="relative flex flex-col justify-between gap-y-8 rounded-xl py-6 px-4"
+          :style="{
+            backgroundImage: `linear-gradient(to right, ${card.bgFrom} 30%, ${card.bgTo} 150%)`,
+          }"
+        >
+          <div class="absolute inset-0 flex-1 left-0 top-0">
+            <img :src="card.bgLine" alt="" srcset="" />
           </div>
-          <div class="relative z-10 text-2xl font-semibold">
-            {{ n(data.total_policy) }}
-            <span class="text-sm font-medium opacity-80">Polis</span>
+          <div
+            class="size-9 rounded-md p-2"
+            :style="{
+              backgroundImage: `linear-gradient(to bottom right, #FFFFFF 40%, ${card.bgTo} 200%)`,
+            }"
+          >
+            <img :src="card.icon" alt="" srcset="" class="w-full h-full" />
           </div>
-        </div>
-        <div class="top-card">
-          <div class="relative z-10 text-[13px] font-medium opacity-90">
-            Total Debitur
-          </div>
-          <div class="relative z-10 text-2xl font-semibold">
-            {{ n(data.total_debitur) }}
-            <span class="text-sm font-medium opacity-80">Debitur</span>
-          </div>
-        </div>
-        <div class="top-card">
-          <div class="relative z-10 text-[13px] font-medium opacity-90">
-            Total Debitur
-          </div>
-          <div class="relative z-10 text-2xl font-semibold">
-            {{ n(data.total_debitur) }}
-            <span class="text-sm font-medium opacity-80">Debitur</span>
-          </div>
-        </div>
-        <div class="top-card">
-          <div class="relative z-10 text-[13px] font-medium opacity-90">
-            Total Debitur
-          </div>
-          <div class="relative z-10 text-2xl font-semibold">
-            {{ n(data.total_debitur) }}
-            <span class="text-sm font-medium opacity-80">Debitur</span>
+          <div class="w-full h-auto flex flex-col gap-y-2">
+            <div class="relative z-10 text-[16px] font-[700] text-[#FFFFFF]/80">
+              {{ card.label }}
+            </div>
+            <div class="relative z-10 text-[20px] font-[700] text-[#FFFFFF]">
+              {{ n(data[card.key]) }}
+              <span class="text-sm font-medium text-[#FFFFFF]/50">{{
+                card.unit
+              }}</span>
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- 2. Total Premi & Total Uang Pertanggungan (strip menempel di tepi kiri kartu) -->
-      <!-- <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Card class="relative overflow-hidden">
-          <span
-            class="absolute inset-y-0 left-0 w-1.5"
-            :style="{ backgroundColor: ACCENT_PREMI }"
-          />
-          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Total Premi
-          </p>
-          <p
-            class="mt-1 text-lg font-semibold text-slate-800 dark:text-slate-100"
-          >
-            {{ n(data.total_premium) }}
-            <span class="text-xs font-medium text-slate-400">IDR</span>
-          </p>
-        </Card>
-        <Card class="relative overflow-hidden">
-          <span
-            class="absolute inset-y-0 left-0 w-1.5"
-            :style="{ backgroundColor: ACCENT_UP }"
-          />
-          <p class="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Total Uang Pertanggungan
-          </p>
-          <p
-            class="mt-1 text-lg font-semibold text-slate-800 dark:text-slate-100"
-          >
-            {{ n(data.total_sum_insured) }}
-            <span class="text-xs font-medium text-slate-400">IDR</span>
-          </p>
-        </Card>
-      </div> -->
 
       <!-- 3. Premi/UP per status — strip warna menempel di tepi kiri kartu (persis pola aslinya) -->
       <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -618,8 +641,18 @@ const submissionChart = computed(() => donut(data.value.submission_type));
       </Card>
 
       <!-- 5. Empat chart (judul & sumber persis aslinya) -->
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card title="Total Polis Per Gender">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div
+          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0]"
+        >
+          <div
+            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] py-3"
+          >
+            <p class="text-[#1E293B] font-[600] text-[14px]">
+              Total Polis Per Gender
+            </p>
+          </div>
+
           <apexchart
             v-if="genderChart.hasData"
             type="donut"
@@ -630,9 +663,19 @@ const submissionChart = computed(() => donut(data.value.submission_type));
           <p v-else class="py-12 text-center text-sm text-slate-400">
             Belum ada data.
           </p>
-        </Card>
+        </div>
 
-        <Card title="Total Polis Per Keputusan Akseptasi">
+        <div
+          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0]"
+        >
+          <div
+            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] py-3"
+          >
+            <p class="text-[#1E293B] font-[600] text-[14px]">
+              Total Polis Per Keputusan Akseptasi
+            </p>
+          </div>
+
           <apexchart
             v-if="riskChart.hasData"
             type="bar"
@@ -643,9 +686,19 @@ const submissionChart = computed(() => donut(data.value.submission_type));
           <p v-else class="py-12 text-center text-sm text-slate-400">
             Belum ada data.
           </p>
-        </Card>
+        </div>
 
-        <Card title="Total Polis Per Produk Bank">
+        <div
+          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0]"
+        >
+          <div
+            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] py-3"
+          >
+            <p class="text-[#1E293B] font-[600] text-[14px]">
+              Total Polis Per Produk Bank
+            </p>
+          </div>
+
           <apexchart
             v-if="productChart.hasData"
             type="donut"
@@ -656,9 +709,19 @@ const submissionChart = computed(() => donut(data.value.submission_type));
           <p v-else class="py-12 text-center text-sm text-slate-400">
             Belum ada data.
           </p>
-        </Card>
+        </div>
 
-        <Card title="Total Polis Per Tabel Medis">
+        <div
+          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0]"
+        >
+          <div
+            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] py-3"
+          >
+            <p class="text-[#1E293B] font-[600] text-[14px]">
+              Total Polis Per Tabel Medis
+            </p>
+          </div>
+
           <apexchart
             v-if="submissionChart.hasData"
             type="donut"
@@ -669,7 +732,7 @@ const submissionChart = computed(() => donut(data.value.submission_type));
           <p v-else class="py-12 text-center text-sm text-slate-400">
             Belum ada data.
           </p>
-        </Card>
+        </div>
       </div>
     </div>
   </div>
@@ -677,21 +740,14 @@ const submissionChart = computed(() => donut(data.value.submission_type));
 
 <style scoped>
 /* Kartu besar biru dengan pattern (meniru .top-card ehd-backoffice) */
-.top-card {
+/* .top-card {
   position: relative;
   overflow: hidden;
   border-radius: 10px;
   background-color: #2563eb;
   color: white;
   padding: 18px 20px;
-}
-.top-card-pattern {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  opacity: 0.9;
-}
+} */
 
 .dropdown-pop-enter-active,
 .dropdown-pop-leave-active {
