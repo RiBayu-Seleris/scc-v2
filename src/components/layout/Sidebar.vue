@@ -22,6 +22,7 @@ import { buildMenu } from "@/config/menu";
 import Icon from "@/components/ui/Icon.vue";
 import { ChevronRight } from "lucide-vue-next";
 import Logo from "/assets/images/cc-logo.png";
+import DarkLogo from "/assets/images/cc-dark.png";
 
 const route = useRoute();
 const auth = useAuthStore();
@@ -201,10 +202,17 @@ function onAfterLeave(el) {
       </div>
       <!-- Logo Seleris Credit Cover (sama seperti aslinya: satu berkas, tanpa varian gelap) -->
       <img
+        v-if="!isCollapsed"
         :src="Logo"
         alt="Seleris Credit Cover"
-        class="h-full w-auto py-1 object-contain"
-        :class="{ hidden: isCollapsed }"
+        class="h-full w-auto py-2 object-contain dark:hidden"
+      />
+
+      <img
+        v-if="!isCollapsed"
+        :src="DarkLogo"
+        alt="Seleris Credit Cover"
+        class="hidden h-full w-auto py-2 object-contain dark:block"
       />
       <!-- <span
         class="sidebar-text truncate text-base font-bold text-slate-800 dark:text-slate-100"

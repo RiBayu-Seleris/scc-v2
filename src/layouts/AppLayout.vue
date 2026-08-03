@@ -6,39 +6,39 @@
  * Saat dimuat, kita ambil flag hak akses menu (loadMenuFlags) supaya sidebar
  * menampilkan menu sesuai role user.
  */
-import { onBeforeUnmount, onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useUiStore } from '@/stores/ui'
-import { useAuthStore } from '@/stores/auth'
-import Sidebar from '@/components/layout/Sidebar.vue'
-import Navbar from '@/components/layout/Navbar.vue'
-import RightPanel from '@/components/layout/RightPanel.vue'
-import Footer from '@/components/layout/Footer.vue'
+import { onBeforeUnmount, onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useUiStore } from "@/stores/ui";
+import { useAuthStore } from "@/stores/auth";
+import Sidebar from "@/components/layout/Sidebar.vue";
+import Navbar from "@/components/layout/Navbar.vue";
+import RightPanel from "@/components/layout/RightPanel.vue";
+import Footer from "@/components/layout/Footer.vue";
 
-const ui = useUiStore()
-const auth = useAuthStore()
-const { isCollapsed, isShowSidebar } = storeToRefs(ui)
+const ui = useUiStore();
+const auth = useAuthStore();
+const { isCollapsed, isShowSidebar } = storeToRefs(ui);
 
 // Sinkronkan sidebar dengan lebar layar: di bawah lg (1024px) sidebar menjadi
 // drawer yang menimpa konten, jadi otomatis DITUTUP; di desktop ditampilkan lagi.
 // Inilah yang membuat sidebar langsung menutup saat layar mengecil (mis. buka devtools).
 function syncSidebarToViewport() {
-  ui.toggleSidebar(window.innerWidth >= 1024)
+  ui.toggleSidebar(window.innerWidth >= 1024);
 }
 
 onMounted(() => {
-  auth.loadMenuFlags()
-  syncSidebarToViewport()
-  window.addEventListener('resize', syncSidebarToViewport)
-})
+  auth.loadMenuFlags();
+  syncSidebarToViewport();
+  window.addEventListener("resize", syncSidebarToViewport);
+});
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', syncSidebarToViewport)
-})
+  window.removeEventListener("resize", syncSidebarToViewport);
+});
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-[#0b1118]">
+  <div class="min-h-screen bg-slate-50 dark:bg-[#07111F]">
     <Sidebar />
 
     <!-- Latar gelap saat drawer sidebar terbuka di layar kecil -->
@@ -51,7 +51,10 @@ onBeforeUnmount(() => {
     </transition>
 
     <!-- Area konten: geser ke kanan mengikuti lebar sidebar (hanya di desktop) -->
-    <div class="flex min-h-screen flex-col transition-all duration-300" :class="isCollapsed ? 'lg:ml-[74px]' : 'lg:ml-64'">
+    <div
+      class="flex min-h-screen flex-col transition-[margin] duration-300"
+      :class="isCollapsed ? 'lg:ml-[74px]' : 'lg:ml-64'"
+    >
       <Navbar />
 
       <main class="flex-1 p-4 sm:p-6">

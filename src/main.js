@@ -2,7 +2,7 @@
  * Titik masuk aplikasi (entry point).
  * Di sinilah Vue, Pinia (state), Router (navigasi), dan i18n (bahasa) dirakit.
  */
-import { createApp } from 'vue'
+import { createApp, defineAsyncComponent } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
@@ -11,7 +11,6 @@ import i18n from './i18n'
 // Style global (Tailwind + kelas komponen reusable)
 import './assets/css/main.css'
 
-import VueApexCharts from 'vue3-apexcharts'
 import Swal from 'sweetalert2'
 
 // SweetAlert2 dijadikan global karena kode lama memanggilnya via `window.Swal`.
@@ -35,7 +34,14 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 app.use(i18n)
-app.use(VueApexCharts)
+
+// ApexCharts berat (~500KB) & hanya dipakai di halaman dashboard. Didaftarkan
+// sebagai komponen ASYNC agar TIDAK ikut bundle awal — baru diunduh saat chart
+// pertama dirender. Pemakaian di template tetap sama: <apexchart ... />.
+app.component(
+  'apexchart',
+  defineAsyncComponent(() => import('vue3-apexcharts')),
+)
 
 // Terapkan tema (light/dark) yang tersimpan SEBELUM mount, supaya tidak "berkedip".
 import { useUiStore } from './stores/ui'

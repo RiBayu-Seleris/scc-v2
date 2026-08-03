@@ -15,7 +15,7 @@
  */
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { FileDown, Mail, CheckCircle, XCircle, CreditCard, Ban, Download } from 'lucide-vue-next'
+import { FileDown, Mail, CheckCircle, XCircle, CreditCard, Ban, Download, PlayCircle } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 import { getSession } from '@/lib/auth'
 import { formatNumber, moment, rupiah } from '@/lib/format'
@@ -64,6 +64,11 @@ const accumulates = ref([])
 const totalAccumulate = ref(0)
 const loading = ref(true)
 const actionLoading = ref('')
+
+// Video di-load HANYA saat diklik (click-to-load). Elemen <video> yang langsung
+// dirender akan buffering/men-decode terus (preload) sehingga GPU & jaringan
+// sibuk NONSTOP -> scroll patah. Ini mencegahnya sampai user benar-benar memutar.
+const activeVideos = ref({ vital: false, front: false, side: false })
 
 const showCertificateModal = ref(false)
 const showStatusModal = ref(false)
@@ -581,6 +586,8 @@ onMounted(loadData)
                   :src="data.id_card_url || '/assets/images/avatar.png'"
                   alt="Foto identitas debitur"
                   class="h-[300px] w-full rounded-lg border border-slate-200 object-cover p-1 dark:border-slate-800"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
 
@@ -609,13 +616,30 @@ onMounted(loadData)
 
             <div>
               <h4 class="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">Video</h4>
+              <!-- Horizontal scroll berisi tile video. Video di-load hanya saat diklik
+                   (click-to-load) supaya tidak buffering/men-decode nonstop. -->
               <div
                 v-if="data.vital_video_url || data.front_appearance_video_url || data.side_appearance_video_url"
-                class="grid grid-cols-1 gap-4 md:grid-cols-3"
+                class="flex gap-4 overflow-x-auto pb-2"
               >
-                <video v-if="data.vital_video_url" :src="data.vital_video_url" class="h-[260px] w-full rounded-lg border border-slate-200 object-cover dark:border-slate-800" controls />
-                <video v-if="!appChubb && data.front_appearance_video_url" :src="data.front_appearance_video_url" class="h-[260px] w-full rounded-lg border border-slate-200 object-cover dark:border-slate-800" controls />
-                <video v-if="!appChubb && data.side_appearance_video_url" :src="data.side_appearance_video_url" class="h-[260px] w-full rounded-lg border border-slate-200 object-cover dark:border-slate-800" controls />
+                <div v-if="data.vital_video_url" class="relative h-[260px] w-[320px] shrink-0 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800">
+                  <video v-if="activeVideos.vital" :src="data.vital_video_url" class="h-full w-full object-cover" controls autoplay playsinline />
+                  <button v-else type="button" class="flex h-full w-full flex-col items-center justify-center gap-2 bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700" @click="activeVideos.vital = true">
+                    <PlayCircle class="h-10 w-10" /><span class="text-xs font-medium">Putar video</span>
+                  </button>
+                </div>
+                <div v-if="!appChubb && data.front_appearance_video_url" class="relative h-[260px] w-[320px] shrink-0 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800">
+                  <video v-if="activeVideos.front" :src="data.front_appearance_video_url" class="h-full w-full object-cover" controls autoplay playsinline />
+                  <button v-else type="button" class="flex h-full w-full flex-col items-center justify-center gap-2 bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700" @click="activeVideos.front = true">
+                    <PlayCircle class="h-10 w-10" /><span class="text-xs font-medium">Putar video</span>
+                  </button>
+                </div>
+                <div v-if="!appChubb && data.side_appearance_video_url" class="relative h-[260px] w-[320px] shrink-0 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800">
+                  <video v-if="activeVideos.side" :src="data.side_appearance_video_url" class="h-full w-full object-cover" controls autoplay playsinline />
+                  <button v-else type="button" class="flex h-full w-full flex-col items-center justify-center gap-2 bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700" @click="activeVideos.side = true">
+                    <PlayCircle class="h-10 w-10" /><span class="text-xs font-medium">Putar video</span>
+                  </button>
+                </div>
               </div>
               <p v-else class="text-sm text-slate-500">Video tidak tersedia.</p>
             </div>
@@ -635,22 +659,22 @@ onMounted(loadData)
               <tbody>
                 <tr>
                   <td>Kondisi Wajah</td>
-                  <td><img v-if="data.appearance.face_path" :src="data.appearance.face_path" alt="" class="h-20 w-24 rounded object-cover" /></td>
+                  <td><img v-if="data.appearance.face_path" :src="data.appearance.face_path" alt="" class="h-20 w-24 rounded object-cover" loading="lazy" decoding="async" /></td>
                   <td>Hidung {{ field(data.appearance.nose_con) }}<br />Mata {{ field(data.appearance.eye_con) }}<br />Mulut {{ field(data.appearance.mouth_con) }}</td>
                 </tr>
                 <tr>
                   <td>Kondisi Badan</td>
-                  <td><img v-if="data.appearance.body_path" :src="data.appearance.body_path" alt="" class="h-20 w-24 rounded object-cover" /></td>
+                  <td><img v-if="data.appearance.body_path" :src="data.appearance.body_path" alt="" class="h-20 w-24 rounded object-cover" loading="lazy" decoding="async" /></td>
                   <td>Badan {{ field(data.appearance.body_con) }}</td>
                 </tr>
                 <tr>
                   <td>Kondisi Postur Tubuh</td>
-                  <td><img v-if="data.appearance.posture_path" :src="data.appearance.posture_path" alt="" class="h-20 w-24 rounded object-cover" /></td>
+                  <td><img v-if="data.appearance.posture_path" :src="data.appearance.posture_path" alt="" class="h-20 w-24 rounded object-cover" loading="lazy" decoding="async" /></td>
                   <td>Postur Tubuh {{ field(data.appearance.posture_con) }}</td>
                 </tr>
                 <tr>
                   <td>Kondisi Berjalan</td>
-                  <td><img v-if="data.appearance.walk_path" :src="data.appearance.walk_path" alt="" class="h-20 w-24 rounded object-cover" /></td>
+                  <td><img v-if="data.appearance.walk_path" :src="data.appearance.walk_path" alt="" class="h-20 w-24 rounded object-cover" loading="lazy" decoding="async" /></td>
                   <td>Berjalan {{ field(data.appearance.walk_con) }}</td>
                 </tr>
               </tbody>

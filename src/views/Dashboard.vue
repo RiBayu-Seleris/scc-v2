@@ -215,6 +215,7 @@ const dataRows = computed(() => {
           bgCardFrom: "#FFFFFF",
           bgCardTo: "#F3CEFE80",
           divFrom: premiFrom,
+          divFromDark: "#64007B",
           divTo: premiTo,
         },
         {
@@ -227,6 +228,7 @@ const dataRows = computed(() => {
           bgCardFrom: "#FFFFFF",
           bgCardTo: "#F3CEFE80",
           divFrom: premiFrom,
+          divFromDark: "#64007B",
           divTo: premiTo,
         },
         {
@@ -239,6 +241,7 @@ const dataRows = computed(() => {
           bgCardFrom: "#FFFFFF",
           bgCardTo: "#F3CEFE80",
           divFrom: premiFrom,
+          divFromDark: "#64007B",
           divTo: premiTo,
         },
         {
@@ -251,6 +254,7 @@ const dataRows = computed(() => {
           bgCardFrom: "#FFFFFF",
           bgCardTo: "#F3CEFE80",
           divFrom: premiFrom,
+          divFromDark: "#64007B",
           divTo: premiTo,
         },
       ],
@@ -270,6 +274,7 @@ const dataRows = computed(() => {
           bgCardFrom: "#FFFFFF",
           bgCardTo: "#F3CEFE80",
           divFrom: upFrom,
+          divFromDark: "#78290E",
           divTo: upTo,
         },
         {
@@ -282,6 +287,7 @@ const dataRows = computed(() => {
           bgCardFrom: "#FFFFFF",
           bgCardTo: "#F3CEFE80",
           divFrom: upFrom,
+          divFromDark: "#78290E",
           divTo: upTo,
         },
         {
@@ -294,6 +300,7 @@ const dataRows = computed(() => {
           bgCardFrom: "#FFFFFF",
           bgCardTo: "#F3CEFE80",
           divFrom: upFrom,
+          divFromDark: "#78290E",
           divTo: upTo,
         },
         {
@@ -306,6 +313,7 @@ const dataRows = computed(() => {
           bgCardFrom: "#FFFFFF",
           bgCardTo: "#F3CEFE80",
           divFrom: upFrom,
+          divFromDark: "#78290E",
           divTo: upTo,
         },
       ],
@@ -560,15 +568,17 @@ const submissionChart = computed(() => donut(data.value.submission_type));
               v-for="row in group.data"
               :key="row.label"
               class="relative overflow-hidden"
-              :bg-from="row.bgFrom"
-              :bg-to="row.bgTo"
-              :bg-card-from="row.bgCardFrom"
-              :bg-card-to="row.bgCardTo"
+              :bg-from="isDark ? '#22344B' : row.bgFrom"
+              :bg-to="isDark ? '#EAA3FF80' : row.bgTo"
+              :bg-card-from="isDark ? '#13243ACC' : row.bgCardFrom"
+              :bg-card-to="isDark ? '#F3CEFE00' : row.bgCardTo"
             >
               <div
-                class="absolute inset-y-2.5 left-0 w-1.5 rounded-r z-10"
+                class="absolute inset-y-2.5 left-0 z-10 w-1.5 rounded-r"
                 :style="{
-                  backgroundImage: `linear-gradient(to right, ${row.divFrom}, ${row.divTo})`,
+                  backgroundImage: isDark
+                    ? `linear-gradient(to right, ${row.divFromDark}, ${row.divTo} )`
+                    : `linear-gradient(to right, ${row.divFrom}, ${row.divTo})`,
                 }"
               />
               <div
@@ -616,7 +626,7 @@ const submissionChart = computed(() => donut(data.value.submission_type));
           <div
             v-for="s in statusRows"
             :key="s.label"
-            class="relative overflow-hidden pt-4 pb-3 px-3 rounded-lg border border-slate-200 text-center dark:border-slate-800"
+            class="relative overflow-hidden pt-4 pb-3 px-3 rounded-lg border border-[#E2E8F0] text-center dark:border-[#22344B] bg-gradient-to-b from-[#FFFFFF] from-[70%] to-[#D9E7FF] to-[150%] dark:bg-gradient-to-b dark:from-[#13243A80] dark:from-[70%] dark:to-[#D9E7FF00] dark:to-[150%]"
           >
             <div
               class="w-full h-auto flex flex-col gap-y-2 justify-start items-start"
@@ -643,12 +653,14 @@ const submissionChart = computed(() => donut(data.value.submission_type));
       <!-- 5. Empat chart (judul & sumber persis aslinya) -->
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div
-          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0]"
+          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0] dark:border-[#22344B]"
         >
           <div
-            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] py-3"
+            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] dark:border-[#22344B] py-3"
           >
-            <p class="text-[#1E293B] font-[600] text-[14px]">
+            <p
+              class="text-[#1E293B] dark:text-[#F1F5F9] font-[600] text-[14px]"
+            >
               Total Polis Per Gender
             </p>
           </div>
@@ -666,12 +678,14 @@ const submissionChart = computed(() => donut(data.value.submission_type));
         </div>
 
         <div
-          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0]"
+          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0] dark:border-[#22344B]"
         >
           <div
-            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] py-3"
+            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] dark:border-[#22344B] py-3"
           >
-            <p class="text-[#1E293B] font-[600] text-[14px]">
+            <p
+              class="text-[#1E293B] dark:text-[#F1F5F9] font-[600] text-[14px]"
+            >
               Total Polis Per Keputusan Akseptasi
             </p>
           </div>
@@ -689,12 +703,14 @@ const submissionChart = computed(() => donut(data.value.submission_type));
         </div>
 
         <div
-          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0]"
+          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0] dark:border-[#22344B]"
         >
           <div
-            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] py-3"
+            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] dark:border-[#22344B] py-3"
           >
-            <p class="text-[#1E293B] font-[600] text-[14px]">
+            <p
+              class="text-[#1E293B] dark:text-[#F1F5F9] font-[600] text-[14px]"
+            >
               Total Polis Per Produk Bank
             </p>
           </div>
@@ -712,12 +728,14 @@ const submissionChart = computed(() => donut(data.value.submission_type));
         </div>
 
         <div
-          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0]"
+          class="w-full h-auto border-[2px] rounded-xl flex flex-col gap-y-4 border-[#E2E8F0] dark:border-[#22344B]"
         >
           <div
-            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] py-3"
+            class="w-full h-auto flex justify-start items-center px-4 border-b-[2px] border-[#E2E8F0] dark:border-[#22344B] py-3"
           >
-            <p class="text-[#1E293B] font-[600] text-[14px]">
+            <p
+              class="text-[#1E293B] dark:text-[#F1F5F9] font-[600] text-[14px]"
+            >
               Total Polis Per Tabel Medis
             </p>
           </div>

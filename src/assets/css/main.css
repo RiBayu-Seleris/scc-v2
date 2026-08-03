@@ -9,6 +9,11 @@
    Prinsip: border-first (bayangan minim), radius kecil,
    tipografi terukur (13–14px), satu aksen warna (navy primary).
    ============================================================ */
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;

@@ -7,7 +7,6 @@
  * Setelah berhasil, diarahkan ke beranda (Home).
  */
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { Eye, EyeOff, User, Lock } from "lucide-vue-next";
 import { useAuthStore } from "@/stores/auth";
 import { useMeta } from "@/composables/useMeta";
@@ -16,7 +15,6 @@ import Logo from "/assets/images/cc-logo.png";
 
 useMeta({ title: "Masuk" });
 
-const router = useRouter();
 const auth = useAuthStore();
 
 const username = ref("");
@@ -46,7 +44,13 @@ async function onLogin() {
   loading.value = false;
 
   if (result.ok) {
-    router.push({ name: "Home" });
+    // FULL page load ke beranda (bukan router.push) — persis SCC
+    // (`window.open(url, "_self")`). Alasannya: setelah logout, localStorage
+    // (partnerIdSelected dkk.) kosong; dengan navigasi SPA, dashboard/list
+    // sempat fetch data SEBELUM loadPartners/ensureSelectedPartner mengisinya,
+    // sehingga data tampil basi sampai user refresh manual. Full load menjamin
+    // semua store & sesi terinisialisasi dari nol dengan urutan yang benar.
+    window.location.assign("/");
   } else {
     alert("error", result.message);
   }

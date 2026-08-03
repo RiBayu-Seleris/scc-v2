@@ -15,7 +15,10 @@ import {
   submissionListFetcher,
   confirmSubmissionDebet,
 } from "@/lib/services/submission";
-import { TAKAFUL_INSURANCE_COMPANY_ID, isTakaful } from "@/config/insuranceMenus";
+import {
+  TAKAFUL_INSURANCE_COMPANY_ID,
+  isTakaful,
+} from "@/config/insuranceMenus";
 import { getSession } from "@/lib/auth";
 import { rupiah } from "@/lib/format";
 import { useMeta } from "@/composables/useMeta";
@@ -780,7 +783,7 @@ async function confirmDebet() {
       </router-link>
     </div>
 
-    <Card no-body class="py-4">
+    <Card bare no-body class="p-0">
       <DataTable
         ref="tableRef"
         :key="tableKey"

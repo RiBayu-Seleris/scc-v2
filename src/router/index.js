@@ -256,6 +256,8 @@ const penutupanRoutes = [
   { path: '/takaful/list-pengajuan/belum-lengkap', name: 'takaful-pengajuan-belum-lengkap', component: SubmissionListPage, props: { view: 'takaful-pengajuan-belum-lengkap' }, meta: { takafulOnly: true } },
   { path: '/takaful/list-keputusan/diterima', name: 'takaful-keputusan-diterima', component: SubmissionListPage, props: { view: 'takaful-keputusan-diterima' }, meta: { takafulOnly: true } },
   { path: '/takaful/list-keputusan/ditolak', name: 'takaful-keputusan-ditolak', component: SubmissionListPage, props: { view: 'takaful-keputusan-ditolak' }, meta: { takafulOnly: true } },
+  { path: '/takaful/inbound', name: 'takaful-inbound', component: () => import('@/views/takaful/Inbound.vue'), meta: { takafulOnly: true } },
+  { path: '/takaful/outbound', name: 'takaful-outbound', component: () => import('@/views/takaful/Outbound.vue'), meta: { takafulOnly: true } },
 
   { path: '/list-underwriting/otomatis', name: 'list-data-underwriting', component: SubmissionListPage, props: { view: 'underwriting' } },
   { path: '/list-underwriting/non-medis', name: 'list-data-underwriting-non-medis', component: SubmissionListPage, props: { view: 'underwriting-non-medis' } },

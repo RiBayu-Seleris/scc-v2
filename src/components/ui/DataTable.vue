@@ -289,16 +289,17 @@ const alignClass = {
     </div>
 
     <!-- Tabel -->
-    <!-- Pembungkus Utama: Memberikan efek kartu modern dengan sudut melengkung dan bayangan halus -->
+    <!-- Bingkai (border/shadow/rounded) disediakan oleh Card pembungkus, supaya tidak
+         terjadi bingkai ganda. Di sini cukup latar + clipping. -->
     <div
-      class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden"
+      class="w-full bg-white dark:bg-[#13243A80] overflow-hidden rounded-xl"
     >
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse min-w-full">
           <!-- Header Tabel: Background soft, teks kecil semi-bold uppercase, tracking renggang -->
           <thead>
             <tr
-              class="bg-slate-50/70 border-b border-slate-100 text-slate-600 text-xs font-semibold select-none"
+              class="bg-slate-50/70 dark:bg-[#13243A80] border-b border-slate-100 text-slate-600 dark:text-white text-xs font-semibold select-none"
             >
               <th
                 v-for="col in columns"
@@ -306,7 +307,7 @@ const alignClass = {
                 :class="[
                   'text-center',
                   isSortable(col)
-                    ? 'cursor-pointer hover:bg-slate-100/80 hover:text-slate-800 transition-colors duration-150'
+                    ? 'cursor-pointer hover:bg-slate-100/80 hover:text-slate-800 dark:hover:text-white dark:hover:bg-black transition-colors duration-150'
                     : '',
                   'py-4 px-6 font-semibold whitespace-nowrap',
                 ]"
@@ -323,11 +324,11 @@ const alignClass = {
                     <template v-if="isSortable(col)">
                       <ArrowUp
                         v-if="sortKey === col.key && sortDir === 'asc'"
-                        class="h-3.5 w-3.5 text-primary-600 animate-fade-in"
+                        class="h-3.5 w-3.5 text-primary-600 dark:text-white animate-fade-in"
                       />
                       <ArrowDown
                         v-else-if="sortKey === col.key && sortDir === 'desc'"
-                        class="h-3.5 w-3.5 text-primary-600 animate-fade-in"
+                        class="h-3.5 w-3.5 text-primary-600 dark:text-white animate-fade-in"
                       />
                       <ChevronsUpDown
                         v-else
@@ -341,7 +342,9 @@ const alignClass = {
           </thead>
 
           <!-- Body Tabel: Jarak (padding) lebih lega dan efek hover baris yang halus -->
-          <tbody class="divide-y divide-slate-100 text-sm text-slate-600">
+          <tbody
+            class="divide-y divide-slate-100 dark:divide-white text-sm text-slate-600 dark:text-white"
+          >
             <!-- Loading State: skeleton shimmer (mengikuti jumlah & perataan kolom) -->
             <template v-if="isLoading">
               <tr v-for="n in skeletonRows" :key="`skeleton-${n}`">
@@ -370,7 +373,7 @@ const alignClass = {
               <tr
                 v-for="(row, idx) in displayRows"
                 :key="row.id ?? idx"
-                class="hover:bg-slate-50/60 transition-colors duration-150 last:[&>td]:pb-7"
+                class="hover:bg-slate-50/60 dark:hover:bg-gray-600 transition-colors duration-150 last:[&>td]:pb-7"
               >
                 <td
                   v-for="col in columns"
@@ -378,7 +381,7 @@ const alignClass = {
                   :class="[
                     alignClass[col.align] || 'text-left',
                     col.wrap ? '' : 'whitespace-nowrap',
-                    'py-[18px] px-6 text-slate-600 font-normal align-middle leading-relaxed',
+                    'py-[18px] px-6 text-slate-600 dark:text-white font-normal align-middle leading-relaxed',
                   ]"
                 >
                   <!-- Kolom `wrap` (mis. Kode Unik) DIBUNGKUS div sendiri supaya

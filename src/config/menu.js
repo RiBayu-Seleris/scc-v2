@@ -121,6 +121,18 @@ export const MENU = [
     ],
   },
 
+  // Khusus akun Takaful; flag dihitung dari insurance_company_id di auth/data.
+  {
+    id: "takaful-inbound-outbound",
+    label: "Inbound/Outbound",
+    icon: "FileUp",
+    flag: "showTakaful",
+    children: [
+      { id: "takaful-inbound", label: "Inbound", route: "takaful-inbound" },
+      { id: "takaful-outbound", label: "Outbound", route: "takaful-outbound" },
+    ],
+  },
+
   // 5c. Klaim — di sidebar SCC grup ini muncul saat
   // (!showMenuBank && !showMenuInsuranceChubb && !showDirectorMenu && !showManagementMenu),
   // yang PERSIS sama dengan derived flag `transactionMenu`. Item di dalamnya punya

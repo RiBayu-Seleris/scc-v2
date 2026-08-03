@@ -29,6 +29,7 @@ export function resolveInsuranceMenu(user) {
 export function defaultFlags() {
   return {
     insuranceMenu: resolveInsuranceMenu(),
+    showTakaful: false,
     isManagement: false,
     isDirector: false,
     isAdmin: false,
@@ -143,6 +144,8 @@ export function applySelectBankFlags(f, user, selectBank, partnerIdSelected) {
 export function withDerivedFlags(f) {
   return {
     ...f,
+    // Inbound/Outbound adalah cabang khusus insurance_company_id 15.
+    showTakaful: f.insuranceMenu?.key === 'takaful',
     // Boleh input pengajuan hanya bila punya izin DAN bukan user bank.
     canInputPengajuan: f.showInputPengajuan && !f.showMenuBank,
     // Beberapa menu hanya untuk internal (bukan bank & bukan insurance Chubb).
